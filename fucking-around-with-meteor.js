@@ -78,11 +78,20 @@ Meteor.methods({
   },
 
   deleteTask: function(taskId) {
-    Tasks.remove(taskId);
+    var task = Tasks.findOne(taskId);
+    if (task.private && task.owner !== Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    else {
+      Tasks.remove(taskId);
+    }
   },
 
   setChecked: function(taskId, setChecked) {
-    Tasks.update(taskId, {$set: {checked: setChecked} });
+    if (task.private && task.owner !== Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    else Tasks.update(taskId, {$set: {checked: setChecked} });
   },
 
   setPrivate: function(taskId, setToPrivate) {
